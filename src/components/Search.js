@@ -10,7 +10,7 @@ const Search = () => {
   //Array with some elment runs at intial render and ever rerender if that same elment data has changed [term]
 
   useEffect(() => {
-    
+     
     const search = async () => {
       const { data } = await axios.get("https://en.wikipedia.org/w/api.php", {
         params: {
@@ -25,8 +25,19 @@ const Search = () => {
       setResults(data.query.search);
       console.log(data.query.search);
     };
-    if (term) {
-      search();
+    if(term && !results.length){
+        search()
+    }
+    const timeoutId=setTimeout(()=>{
+
+        if (term) {
+          search();
+        }
+    },450);
+    
+    //Clears Timeout
+    return ()=>{
+        clearTimeout(timeoutId)
     }
   }, [term]);
 
@@ -34,8 +45,11 @@ const Search = () => {
     return (
       <div key={result.pageid} className="item">
         <div className="right floated content">
-          <a href={`https://en.wikipedia.org?curid=${result.pageid}`} className="ui button">
-            go
+          <a
+            href={`https://en.wikipedia.org?curid=${result.pageid}`}
+            className="ui button"
+          >
+            Go
           </a>
         </div>
         <div className="content">
